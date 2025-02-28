@@ -35,7 +35,7 @@ export const CartCounter = ({ value = 0 }: Props) => {
 
   useEffect(() => {
     getApiCounter().then((data) => dispatch(initCounterState(data.count)));
-  }, []);
+  }, [dispatch]);
 
   return (
     <>

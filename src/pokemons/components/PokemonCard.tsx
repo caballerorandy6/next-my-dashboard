@@ -1,7 +1,11 @@
+"use client";
+
 import Link from "next/link";
 import Image from "next/image";
 import { SimplePokemon } from "../interfaces/simple-pokemon";
-import { IoHeartOutline } from "react-icons/io5";
+import { IoHeartOutline, IoHeart } from "react-icons/io5";
+import { useAppDispatch, useAppSelector } from "@/store";
+import { toogleFavorite } from "@/store/pokemons/pokemonsSlice";
 
 interface Props {
   pokemon: SimplePokemon;
@@ -9,6 +13,13 @@ interface Props {
 
 export const PokemonCard = ({ pokemon }: Props) => {
   const { id, name } = pokemon;
+  // the !! converts the value to a boolean is similar to state.pokemons[id] !== undefined
+  const isFavorite = useAppSelector((state) => !!state.pokemons.favorites[id]);
+  const dispatch = useAppDispatch();
+
+  const onToogle = () => {
+    dispatch(toogleFavorite(pokemon));
+  };
 
   return (
     <div className="mx-auto right-0 mt-2 w-60">
@@ -21,6 +32,7 @@ export const PokemonCard = ({ pokemon }: Props) => {
             height={100}
             alt={pokemon.name}
             priority={false}
+            className="h-auto w-auto"
           />
 
           <p className="pt-2 text-lg font-semibold text-gray-50 capitalize">
@@ -35,21 +47,18 @@ export const PokemonCard = ({ pokemon }: Props) => {
             </Link>
           </div>
         </div>
-        <div className="border-b">
-          <Link
-            href="/dashboard/main"
-            className="px-4 py-2 hover:bg-gray-100 flex items-center"
-          >
+        <div onClick={onToogle} className="border-b">
+          <div className="px-4 py-2 hover:bg-gray-100 flex items-center cursor-pointer">
             <div className="text-red-600">
-              <IoHeartOutline />
+              {isFavorite ? <IoHeart /> : <IoHeartOutline />}
             </div>
             <div className="pl-3">
               <p className="text-sm font-medium text-gray-800 leading-none">
-                Not Favorite Yet
+                {isFavorite ? "Favorite" : "Add to Favorites"}
               </p>
-              <p className="text-xs text-gray-500">View your campaigns</p>
+              <p className="text-xs text-gray-500">Click to change</p>
             </div>
-          </Link>
+          </div>
         </div>
       </div>
     </div>
